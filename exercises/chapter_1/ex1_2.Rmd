@@ -1,0 +1,12 @@
+# Hello, Markdown!
+
+This is my first automatically generated report, 
+where I print message and stuff.
+
+```{r}
+print("G'day!")
+print(2 + 2)
+plot((1:10)^2)
+```
+
+Thank for your attention.
