@@ -112,7 +112,7 @@ What does the following arguments (use cases)?
 
 ## Creating named objects {-}
 
-- You can assign (memorized) and object with `<-`
+- You can assign (memorize) an object with `<-`
 
 - Names are case-sensitive: `bob` != `Bob` 
 
