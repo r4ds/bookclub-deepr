@@ -58,7 +58,7 @@ Go into R and use `cat()` !
 
 `+` is for more
 
-and we can use `ESC` or `CTRL+C` to abord input! 
+and we can use `ESC` or `CTRL+C` to abort input! 
 
 ### Batch mode
 
