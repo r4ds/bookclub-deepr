@@ -4,7 +4,7 @@
 
 - Describe what this book is about! 
 
-- Run R in **interactive**, **batch mode** and **semi-interactive**
+- Run R in **interactive mode**, **batch mode** and **semi-interactive mode**
 
 - Create, import and work with one of the basic data type: **numeric vector**
 
