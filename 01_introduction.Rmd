@@ -14,7 +14,7 @@
 
   * Graphics capabilities. 
   * Help system. 
-  * Interfacing compile code. 
+  * Interface to compiled code. 
   * A package systenm + package repositories (CRAN) 
   * A 👌 lively community!
   
