@@ -2,12 +2,116 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Create numeric vector 
+    * `c` , `rep`/`seq` and `:`, 
+    * (pseudo)random numbers, `sample()` / `r`+`unif`/`norm`.   
+    * reading with `scan`
+    
+- Naming our first object: `<-` 
 
-## SLIDE 1 {-}
+- **Vectorized** mathematical functions 
+    * Some ubiquitous operations: `abs`, `round`, `exp`. 
+    * Probability distribution: continous (uniform) / discrete (Poison). 
+    * Arithmetic operations
+        + **Vectorized** arithmetic operators. 
+        + **Recycling rule**  
+        + Operator precedence 
+        + shortly accumulating and aggregating 
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+## Creating numeric vector 1 {-}
+
+### Numeric constant
+
+```{r}
+-3.14
+1.23e3
+NA_real_
+typeof(NA_real_)
+```
+
+### Vectors 
+
+```{r}
+c(1, 5, 9)
+# c( ... ) dot-dot-dot are called ellipsis: any arbitrary number of arguments
+rep(1, 5)
+# rep(x, times = 1, length.out = NA, each = 1)
+```
+
+R allows positional matching of argument 
+
+```{r}
+rep(c(1, 2, 3), 4)   # positional matching of arguments: `x`, then `times`
+rep(c(1, 2, 3), times=4)    # `times` is the second argument
+rep(x=c(1, 2, 3), times=4)  # keyword arguments of the form name=value
+rep(times=4, x=c(1, 2, 3))  # keyword arguments can be given in any order
+rep(times=4, c(1, 2, 3))    # mixed positional and keyword arguments
+```
+
+You should avoid partial matching! 
+
+### Arithmetic progressions `seq` and `:`
+
+```{r}
+seq(1, 15, 2) 
+seq(from = 1, to = 15, by = 2)
+seq(to = 15, by = 2)
+```
+
+`length.out` argument can also be used 
+
+```{r}
+1:10
+-1:10
+-1:-10
+-(1:10)
+-(1):10
+```
+
+### Generating pseudorandom numbers
+
+```{r}
+runif(2) # uniform U(min = 0, max = 1)
+rnorm(10) # normal N(mean = 0, sd = 1)
+```
+
+We are going to see a list of them later!
+
+`Sample` to sample item from a given vector:
+
+```{r}
+sample(1:10, 5, replace = TRUE)
+sample(10, 5, replace = TRUE)
+```
+
+You can use `set.seed(42)` to specify a state for the Random Number Generator (see `help(RNG)`) 
+
+### reading data with `scan` 
+
+```{bash}
+head data/euraud-20200101-20200630.csv
+```
+
+We can use `scan`:
+
+```{r}
+scan(paste0("https://github.com/gagolews/teaching-data/raw/",
+    "master/marek/euraud-20200101-20200630.csv"), comment.char = "#") 
+```
+
+```{r}
+scan("data/euraud-20200101-20200630.csv", comment.char = "#")
+```
+
+What does the following arguments (use cases)? 
+
+- `dec`  
+- `sep`  
+- `what` 
+- `na.strings` 
+
+## Creating named objects {-}
+
 
 ## Meeting Videos {-}
 
