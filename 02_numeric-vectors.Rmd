@@ -11,7 +11,7 @@
 
 - **Vectorized** mathematical functions 
     * Some ubiquitous operations: `abs`, `round`, `exp`. 
-    * Probability distribution: continous (uniform) / discrete (Poison). 
+    * Probability distribution: continuous (uniform) / discrete (Poison). 
     * Arithmetic operations
         + **Vectorized** arithmetic operators. 
         + **Recycling rule**  
