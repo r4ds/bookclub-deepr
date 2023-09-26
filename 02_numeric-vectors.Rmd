@@ -133,7 +133,7 @@ For naming temporary object:
 
 - object size: n , m, p or nx, ny, etc 
 
-One tips: 
+Tip: 
 
 ```{r}
 (x <- 1:3) # allow you to print the object
