@@ -2,12 +2,271 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Create numeric vector 
+    * `c` , `rep`/`seq` and `:`, 
+    * (pseudo)random numbers, `sample()` / `r`+`unif`/`norm`.   
+    * reading with `scan`
+    
+- Naming our first object: `<-` 
 
-## SLIDE 1 {-}
+- **Vectorized** mathematical functions 
+    * Some ubiquitous operations: `abs`, `round`, `exp`. 
+    * Probability distribution: continuous (uniform) / discrete (Poison). 
+    * Arithmetic operations
+        + **Vectorized** arithmetic operators. 
+        + **Recycling rule**  
+        + Operator precedence 
+        + shortly accumulating and aggregating 
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+## Creating numeric vector 1 {-}
+
+### Numeric constant
+
+```{r}
+-3.14
+1.23e3
+NA_real_
+typeof(NA_real_)
+```
+
+### Vectors 
+
+```{r}
+c(1, 5, 9)
+# c( ... ) dot-dot-dot are called ellipsis: any arbitrary number of arguments
+rep(1, 5)
+# rep(x, times = 1, length.out = NA, each = 1)
+```
+
+R allows positional matching of argument 
+
+```{r}
+rep(c(1, 2, 3), 4)   # positional matching of arguments: `x`, then `times`
+rep(c(1, 2, 3), times=4)    # `times` is the second argument
+rep(x=c(1, 2, 3), times=4)  # keyword arguments of the form name=value
+rep(times=4, x=c(1, 2, 3))  # keyword arguments can be given in any order
+rep(times=4, c(1, 2, 3))    # mixed positional and keyword arguments
+```
+
+You should avoid partial matching! 
+
+### Arithmetic progressions `seq` and `:`
+
+```{r}
+seq(1, 15, 2) 
+seq(from = 1, to = 15, by = 2)
+seq(to = 15, by = 2)
+```
+
+`length.out` argument can also be used 
+
+```{r}
+1:10
+-1:10
+-1:-10
+-(1:10)
+-(1):10
+```
+
+### Generating pseudorandom numbers
+
+```{r}
+runif(2) # uniform U(min = 0, max = 1)
+rnorm(10) # normal N(mean = 0, sd = 1)
+```
+
+We are going to see a list of them later!
+
+`Sample` to sample items from a given vector:
+
+```{r}
+sample(1:10, 5, replace = TRUE)
+sample(10, 5, replace = TRUE)
+```
+
+You can use `set.seed(42)` to specify a state for the Random Number Generator (see `help(RNG)`) 
+
+### reading data with `scan` 
+
+```{bash}
+head data/euraud-20200101-20200630.csv
+```
+
+We can use `scan`:
+
+```{r}
+scan(paste0("https://github.com/gagolews/teaching-data/raw/",
+    "master/marek/euraud-20200101-20200630.csv"), comment.char = "#") 
+```
+
+```{r}
+scan("data/euraud-20200101-20200630.csv", comment.char = "#")
+```
+
+What do the following arguments do (use cases)? 
+
+- `dec`  
+- `sep`  
+- `what` 
+- `na.strings` 
+
+## Creating named objects {-}
+
+- You can assign (memorize) an object with `<-`
+
+- Names are case-sensitive: `bob` != `Bob` 
+
+- `.` is legal but not if followed by number and starting with it
+
+- `'if`, `for`, `function`, `next` `TRUE` are reserved
+
+
+You should follow a naming conventions (usually follow project guidelines). 
+
+For naming temporary object: 
+
+- vectors: x, y z
+
+- matrices: A, B, ... , X, Y, Z
+
+- integer indexes: i, j, k 
+
+- object size: n, m, p or nx, ny, etc 
+
+Tip: 
+
+```{r}
+(x <- 1:3) # allows you to print the object
+```
+
+
+## Vectorised mathematical functions {-}
+
+$$\textbf{x} \quad of \quad length \quad n  \quad (x_1, x_2, ..., x_n)$$
+
+`abs()` is vectorized: 
+
+```{r}
+abs(c(2, 0, -1, -3, NA_real_))
+```
+
+Instead of defined to act on a single value ("scalar") it is applied on each element: 
+
+$$ |\textbf{x}| = (|x_1|, |x_2|, ..., |x_n|) $$
+
+It is the same for `round`, `floor`, etc but also `log` and `exp` (keep it mind changing the base of the log is an argument, default is `base = exp(1)`) 
+
+## Probability distributions: 
+
+R has a lot of univariate distributions both discrete and continuous. 
+
+I use very frequently `*unif`, `*norm` for continuous and `*binon`, `*pois` for discrete. 
+For continuous distributions `*` can be:
+
+- `d` : probability density function (PDF)
+
+- `p` : cumulative distribution function (CDF)
+
+- `q` : quantile function (1/CDF)
+
+- `r` : generate random number (deviates?)
+
+For discretes distributions: 
+
+- `p` and `r` are the sam as above
+
+- `d` give you the probability mass function (PMF)
+
+- `q` is also the quantile function but defined as a generalised 1/CDF
+
+You can find packages that implement other commons functions if needed. 
+
+
+## Arithmetic operations {-}
+
+### Vectorised arithmetic operators
+
+R have the classic operators (`+`, `-`, `*`, `/`, `%/%`, `%%`, `^` == `**`) but they are vectorised: 
+
+```{r}
+c(1, 2, 3) * c(10, 100, 1000)
+
+`*`(c(1, 2, 3), c(10, 100, 1000))
+```
+
+### Recycling rule 
+
+`+` & co are called operators and `c(1, 2, 3)` is an operands. 
+
+When operands have different length they are recycled: 
+
+```{r}
+0:7 /3
+1:10 * c(-1, 1)
+2 ^ (0:10)
+```
+
+
+But what happens if one operands can't be recycled in its entirety?
+
+```{r}
+c(1, 10 , 100) * 1:8
+```
+
+Most of the time it is used for vector scalar operations but it can be used in usefull in other schemes. 
+
+`pmin` and `pmax` have similar behavior: 
+
+```{r}
+pmin(3, 1:5)
+```
+
+### Operator precedence
+
+Rules that govern the order of computation: 
+
+I prefer them in from highest to lowest precedence:
+
+- `^` 
+
+- `-` and `+` (unary)
+
+- `:` 
+
+- `%%` and `%/%`
+
+- `*` and `/`
+
+- `-` and `+` (binary)
+
+- `<-`
+
+Usually left to right except `^` and `<-`
+
+In doubt you can always use some bracket `()` (it makes also the code more readable) !
+
+### Accumulating 
+
+Sometimes you do not want element-wise operations: 
+
+You can then use the `cumsum()`/ `cumprod()` family of functions. 
+
+```{r}
+cumsum(1:8)
+cummin(c(3, 2, 4, 5, 1, 6, 0))
+```
+
+`diff` is very interesting function that return lagged differences
+
+### Aggregating 
+
+Sometimes we just want the last "cumulants" that summarise all the imputs. 
+
+We can then use `sum()`, `prod()`, `min()`. 
+
+You also have `mean()`, `var()` and `sd()` that are very hany 
+
+Note `var()` is `sum((x- mean(x))^2) / (length(x) - 1)`
 
 ## Meeting Videos {-}
 

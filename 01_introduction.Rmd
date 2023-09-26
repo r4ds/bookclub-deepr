@@ -2,23 +2,76 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Describe what this book is about! 
 
-## SLIDE 1 {-}
+- Run R in **interactive mode**, **batch mode** and **semi-interactive mode**
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+- Create, import and work with one of the basic data types: **numeric vector**
 
-## Meeting Videos {-}
+## Preface 1 {-}
 
-### Cohort 1 {-}
+- R is a language and an environment
 
-`r knitr::include_url("https://www.youtube.com/embed/URL")`
+  * Graphics capabilities. 
+  * Help system. 
+  * Interface to compiled code. 
+  * A package systenm + package repositories (CRAN) 
+  * A 👌 lively community!
+  
+## Preface 2 {-}
 
-<details>
-<summary> Meeting chat log </summary>
+The author does not like: 
 
+- the way R is taught in a stats course 
+
+- the tidyverse
+
+He advocates for an approach that could help us solve every data intense problem and acquire skills relevant to other languages. 
+
+## Preface 3 {-}
+
+The book follows more of a data-types approach than a workflow approach. 
+
+1. Basic types: 
+    * Atomic: logical (TRUE/FALSE), numeric, character. 
+    * Function. 
+    * List. 
+
+2. Compound types: 
+    * Factor. 
+    * Matrix. 
+    * data.frame.  
+    * formula. 
+    
+3. Advanced material: 
+  * Symbol, call, expressions: metaprograming. 
+  * Environment: scoping / store/access objects   
+  * Interface compiled code
+
+## Introduction 1. {-}
+
+### Interactive mode
+
+Go into R and use `cat()` ! 
+
+`>` see the prompt 
+
+`+` is for more
+
+and we can use `ESC` or `CTRL+C` to abort input! 
+
+### Batch mode
+
+```{bash, eval=FALSE}
+Rscript file.R
 ```
-LOG
-```
-</details>
+
+should we do a demo?
+
+### Semi interactive: 
+
+- JupyterLab
+
+- Rmarkdown 
+
+- org-mode 
