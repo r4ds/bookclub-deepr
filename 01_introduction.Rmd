@@ -26,7 +26,7 @@ The author does not like:
 
 - the tidyverse
 
-He advocates for an approach that could help us solving every data intense problem and acquire skills relevant to other language. 
+He advocates for an approach that could help us solve every data intense problem and acquire skills relevant to other languages. 
 
 ## Preface 3 {-}
 
