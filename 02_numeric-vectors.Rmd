@@ -114,7 +114,7 @@ What does the following arguments (use cases)?
 
 - You can assign (memorized) and object with `<-`
 
-- Name are case-sensitive: `bob` != `Bob` 
+- Names are case-sensitive: `bob` != `Bob` 
 
 - `.` is legal but not if followed by number and starting with it
 
