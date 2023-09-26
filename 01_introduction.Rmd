@@ -2,7 +2,7 @@
 
 **Learning objectives:**
 
-- What this book is about! 
+- Describe what this book is about! 
 
 - Run R in **interactive**, **batch mode** and **semi-interactive**
 
