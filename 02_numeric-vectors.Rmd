@@ -129,7 +129,7 @@ For naming temporary object:
 
 - matrices: A, B, ... , X, Y, Z
 
-- integer indexes: i, j , k 
+- integer indexes: i, j, k 
 
 - object size: n , m, p or nx, ny, etc 
 
