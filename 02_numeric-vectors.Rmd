@@ -131,7 +131,7 @@ For naming temporary object:
 
 - integer indexes: i, j, k 
 
-- object size: n , m, p or nx, ny, etc 
+- object size: n, m, p or nx, ny, etc 
 
 Tip: 
 
