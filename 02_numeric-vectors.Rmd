@@ -103,7 +103,7 @@ scan(paste0("https://github.com/gagolews/teaching-data/raw/",
 scan("data/euraud-20200101-20200630.csv", comment.char = "#")
 ```
 
-What does the following arguments (use cases)? 
+What do the following arguments do (use cases)? 
 
 - `dec`  
 - `sep`  
