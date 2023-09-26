@@ -30,7 +30,7 @@ He advocates for an approach that could help us solve every data intense problem
 
 ## Preface 3 {-}
 
-The book follow more more data types approach than a workflow approach. 
+The book follows more of a data-types approach than a workflow approach. 
 
 1. Basic types: 
     * Atomic: logical (TRUE/FALSE), numeric, character. 
