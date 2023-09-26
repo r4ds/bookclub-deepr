@@ -77,7 +77,7 @@ rnorm(10) # normal N(mean = 0, sd = 1)
 
 We are going to see a list of them later!
 
-`Sample` to sample item from a given vector:
+`Sample` to sample items from a given vector:
 
 ```{r}
 sample(1:10, 5, replace = TRUE)
@@ -112,6 +112,161 @@ What does the following arguments (use cases)?
 
 ## Creating named objects {-}
 
+- You can assign (memorized) and object with `<-`
+
+- Name are case-sensitive: `bob` != `Bob` 
+
+- `.` is legal but not if followed by number and starting with it
+
+- `'if`, `for`, `function`, `next` `TRUE` are reserved
+
+
+You should follow a naming conventions (usually follow project guidelines). 
+
+For naming temporary object: 
+
+- vectors: x, y z
+
+- matrices: A, B, ... , X, Y, Z
+
+- integer indexes: i, j , k 
+
+- object size: n , m, p or nx, ny, etc 
+
+One tips: 
+
+```{r}
+(x <- 1:3) # allow you to print the object
+```
+
+
+## Vectorised mathematical functions {-}
+
+$$\textbf{x} \quad of \quad length \quad n  \quad (x_1, x_2, ..., x_n)$$
+
+`abs()` is vectorized: 
+
+```{r}
+abs(c(2, 0, -1, -3, NA_real_))
+```
+
+Instead of defined to act on a single value ("scalar") it is applied on each elements: 
+
+$$ |\textbf{x}| = (|x_1|, |x_2|, ..., |x_n|) $$
+
+It is the same for `round`, `floor`, etc but also `log` and `exp` (keep it mind changing the base of the log is an argument, default is `base = exp(1)`) 
+
+## Probability distributions: 
+
+R has a lot of univariate distributions both discrete and continuous. 
+
+I use very frequently `*unif`, `*norm` for continuous and `*binon`, `*pois` for discrete. 
+For continuous distributions `*` can be:
+
+- `d` : probability density function (PDF)
+
+- `p` : cumulative distribution function (CDF)
+
+- `q` : quantile function (1/CDF)
+
+- `r` : generate random number (deviates?)
+
+For discretes distributions: 
+
+- `p` and `r` are the sam as above
+
+- `d` give you the probability mass function (PMF)
+
+- `q` is also the quantile function but defined as a generalised 1/CDF
+
+You can find packages that implement other commons functions if needed. 
+
+
+## Arithmetic operations {-}
+
+### Vectorised arithmetic operators
+
+R have the classic operators (`+`, `-`, `*`, `/`, `%/%`, `%%`, `^` == `**`) but they are vectorised: 
+
+```{r}
+c(1, 2, 3) * c(10, 100, 1000)
+
+`*`(c(1, 2, 3), c(10, 100, 1000))
+```
+
+### Recycling rule 
+
+`+` & co are called operators and `c(1, 2, 3)` is an operands. 
+
+When operands have different length they are recycled: 
+
+```{r}
+0:7 /3
+1:10 * c(-1, 1)
+2 ^ (0:10)
+```
+
+
+But what happens if one operands can't be recycled in its entirety?
+
+```{r}
+c(1, 10 , 100) * 1:8
+```
+
+Most of the time it is used for vector scalar operations but it can be used in usefull in other schemes. 
+
+`pmin` and `pmax` have similar behavior: 
+
+```{r}
+pmin(3, 1:5)
+```
+
+### Operator precedence
+
+Rules that govern the order of computation: 
+
+I prefer them in from highest to lowest precedence:
+
+- `^` 
+
+- `-` and `+` (unary)
+
+- `:` 
+
+- `%%` and `%/%`
+
+- `*` and `/`
+
+- `-` and `+` (binary)
+
+- `<-`
+
+Usually left to right except `^` and `<-`
+
+In doubt you can always use some bracket `()` (it makes also the code more readable) !
+
+### Accumulating 
+
+Sometimes you do not want element-wise operations: 
+
+You can then use the `cumsum()`/ `cumprod()` family of functions. 
+
+```{r}
+cumsum(1:8)
+cummin(c(3, 2, 4, 5, 1, 6, 0))
+```
+
+`diff` is very interesting function that return lagged differences
+
+### Aggregating 
+
+Sometimes we just want the last "cumulants" that summarise all the imputs. 
+
+We can then use `sum()`, `prod()`, `min()`. 
+
+You also have `mean()`, `var()` and `sd()` that are very hany 
+
+Note `var()` is `sum((x- mean(x))^2) / (length(x) - 1)`
 
 ## Meeting Videos {-}
 

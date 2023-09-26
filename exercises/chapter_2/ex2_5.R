@@ -1,5 +1,4 @@
-# rnorm
-
+# rnorm =================
 my_mean <- -1
 my_sd <- 5
 
@@ -19,8 +18,7 @@ lines(x,
       dnorm(x, my_mean, my_sd), 
       lwd = 2)
 
-# runif
-
+# runif =========
 my_min <- 0
 my_max <- 1
 
@@ -36,7 +34,7 @@ lines(x,
       dunif(x, my_min, my_max),
       lwd = 2)
 
-# rbeta
+# rbeta ===============
 my_alpha <- 2
 my_beta <- 1 
 
