@@ -2,12 +2,159 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Introduction to logical vector. 
+- Comparing elements: 
+  * Integer  
+  * Double precision float
 
-## SLIDE 1 {-}
+- Logical operations
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+## Creating logical vectors {-}
+
+```{r}
+c(TRUE, FALSE, NA, TRUE, FALSE)
+
+sample(c(TRUE, FALSE), 
+       10,
+       replace = TRUE, # you get an error if omited 
+       prob = c(.8, .2))
+```
+
+## Comparing elements (1)
+
+We have the usual binary operators : `<` , `>`, `<=` , `>=`, `==` and `!=`
+
+They operate elementwise: 
+
+```{r}
+c(1, 2, 3, 4) == c(2, 2, 3, 8)
+```
+
+And R apply the *recycle rule*:
+
+```{r}
+3 < 1:5
+```
+
+## Comparing elements, NA, NaN, Inf (2)
+
+Testing equality on NA is not correct: What does "I do not know" `==` "I do not know" could mean. We should use the function `is.na()`. 
+
+We should also use `is.finite`, and `is.nan` (all of them are vectorized)
+
+## Dealing with integer and floating point numbers
+
+- Doing math with integer is always safe 
+
+```{r}
+.Machine$integer.max 
+
+# but you can still overflow:
+# note: it is a warning not an error 
+.Machine$integer.max + 1L 
+```
+
+- Floating point number are "limited": 8 bytes 
+
+```{r}
+print(0.1234567891123456789012, digits = 22)
+```
+
+Hence: 
+
+```{r}
+0.1 + 0.2 == 0.3
+```
+
+What can we do! 
+
+- `round` is an usual trick 
+
+- the author likes `abs(x - y) < very_small_number`
+
+```{r}
+abs(sin(pi) - 0) < 2^-26
+```
+
+## Logical operations
+
+### Vectorized logical operations: 
+
+`TRUE` and `FALSE` can also be a result of a "predicate":  
+
+`==` and `>` (and co.) only accept two arguments (binary operators):  
+
+We need to use logical operators (`help("Logic")`). 
+
+Logical operators: 
+
+* `!` not (Unary)
+
+* `&` and: are both true
+
+* `|` or: at least one true 
+
+* `xor` exclusive-or: one and only one is true 
+
+(We will see their scalar counter part in chapter 8)
+
+Those operators have lower precedence than the arithmetic so they are quite intuitive (except maybe `!`)
+
+### missingness
+
+- `NA` | `TRUE` -> `TRUE` (this one is easy)
+
+- `NA` | `FALSE` -> `NA` because it depend on what `NA` could be 
+
+(in doubt build a quick *truth tables*)
+
+### Aggregating with all, any and sum
+
+- `all()` test if all elements match 
+
+- `any()` test if at least one match 
+
+- `sum()` use the trick that `FALSE` is `0` and `TRUE` is `1`
+
+```{r}
+sum(runif(10000) >= .2)
+```
+
+### Simplify predicates 
+
+You should think about it! 
+
+* a > b | a <= b  : this one is obvious (but I could have done it!)
+
+some are less obvious. 
+
+## Selecting elements based on a condition: ifelse
+
+We will see `if ... else ...` later
+
+ifelse follow this syntax: 
+
+ifelse(l, t, f): ie if `l` is `TRUE` do `t` / if `l` is FALSE do `f`
+
+```{r}
+z <- rnorm(6)
+ifelse(z >= 0, z, - z ) # yup abs(z)
+```
+
+it applies the recycle rules: 
+
+```{r}
+x <- rnorm(6)
+ifelse(x > 0, x^2, 0)
+```
+
+Important: all elements are evaluated before knowing which are selected! (that explain we have a warning sometimes instead of an error)
+
+## Good resource: 
+
+Julia's zine:
+
+https://store.wizardzines.com/products/how-integers-and-floats-work
 
 ## Meeting Videos {-}
 
