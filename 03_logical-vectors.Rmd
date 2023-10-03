@@ -4,7 +4,7 @@
 
 - Introduction to logical vector. 
 - Comparing elements: 
-  * Integer. 
+  * Integer  
   * Double precision float
 
 - Logical operations
@@ -70,7 +70,7 @@ What can we do!
 
 - `round` is an usual trick 
 
-- the author like `abs(x - y) < very_small_number`
+- the author likes `abs(x - y) < very_small_number`
 
 ```{r}
 abs(sin(pi) - 0) < 2^-26
