@@ -1,6 +1,6 @@
 # Vector indexing
 
-## Basics
+## Basics {-}
 ### `head()` and `tail()`
 + `head()` and `tail()` return the first or last six elements of an atomic vector
 ```{r}
@@ -12,7 +12,7 @@ head(x)
 tail(x)
 ```
 
-## `'['` - Extract or Replace
+## `'['` - Extract or Replace {-}
 + We can index with the familiar `'['`
 + It's an actual R function!
 ```{r}
@@ -24,7 +24,7 @@ length(methods('['))
 ```
 + It has methods for tons of different object classes!
 
-## `'['` - Extract or Replace
+## `'['` - Extract or Replace {-}
 ```{r}
 x <- seq(10, 100, 10)
 # First element
@@ -34,7 +34,7 @@ x[length(x)]
 # First three elements
 x[1:3]
 ```
-## `'['` - Extract or Replace
+## `'['` - Extract or Replace {-}
 + `'['` takes both numeric and logical vectors
 + Therefore, we can index with an expression or the `which()` function
 ```{r}
@@ -46,9 +46,9 @@ all.equal(x[x>y], # indexer returns logical vector
          x[which(x>y)]) # indexer returns numeric vector
 ```
 
-## `'['` - Extract or Replace
+## `'['` - Extract or Replace {-}
 + Note: `which()` by default removes `NA` values, while `'['` does not.
-## `'['` - Extract or Replace
+## `'['` - Extract or Replace {-}
 + To *exclude* elements, we can pass negative integers to `'['`
 ```{r}
 x[-1]
@@ -57,20 +57,20 @@ x[-1]
 ```{r}
 all.equal(x[-1], x[2:10])
 ```
-## `'['` - Extract or Replace
+## `'['` - Extract or Replace {-}
 + `'['` returns `NA` when we pass `NA` to it
 ```{r}
 x[c(NA, 2, 4)]
 ```
 + For lists, `'['` returns `NULL` when we pass `NA`
 
-## `'['` - Extract or Replace
+## `'['` - Extract or Replace {-}
 + For named vectors, we can pass characters to `'['`
 ```{r}
 x <- structure(x, names=letters[1:10])
 x[c("a", "f", "a", "g", "z")]
 ```
-## `'['` - Extract or Replace
+## `'['` - Extract or Replace {-}
 + `'['` works on lists, and always returns a list
 ```{r}
 y <- list(a = 1:10,
@@ -79,7 +79,7 @@ y <- list(a = 1:10,
 y[c(1,2)]
 ```
 
-## `'[['` and recursiveness
+## `'[['` and recursiveness {-}
 + `'[['` can be used to select a single element, removing the names attribute.
 + For lists, `'[['` does not return a list but an object of the class of the underlying list element
 ```{r}
@@ -92,7 +92,7 @@ data.class(x[1])
 # vs.
 data.class(x[[1]])
 ```
-## `'[['` and recursiveness
+## `'[['` and recursiveness {-}
 + `'[['` operates recursively when given mulitple indexes.
 + Compare:
 ```{r}
@@ -108,7 +108,7 @@ y <- list(a = 1:10,
 # list with '[['
 y[[c(1,2)]]   # equivalent to y[[1]][[2]]
 ```
-## `'[<-'` and `'[[<-'`
+## `'[<-'` and `'[[<-'` {-}
 + The "replacement versions" of these functions are `'[<-'` and `'[[<-'`
 + These are actually separate functions, that allow us to assign values at a specific index (see Chapter 9)
 
@@ -116,9 +116,9 @@ y[[c(1,2)]]   # equivalent to y[[1]][[2]]
 y[[c(1,2)]] <- 999
 y
 ```
-## Useful functions
+## Useful functions {-}
 
-## `match()` and `%in%`
+## `match()` and `%in%` {-}
 + `match()` returns the indices of elements in `x` that have matching values in `table` 
 ```{r}
 table <- sample(c(1:10, NA), size = 100, replace = TRUE)
@@ -133,7 +133,7 @@ match(x, table, nomatch = 0)
 # returns logical in x
 x %in% table
 ```
-## `findInterval()`
+## `findInterval()` {-}
 
 + `findInterval` returns the interval range in `interval` that contains each element in `x`
 
@@ -145,7 +145,7 @@ interval <- c(-Inf, .25, .5, Inf)
 
 findInterval(x, interval)
 ```
-## `findInterval() `
+## `findInterval() ` {-}
 ### Exercise 5-21
 ```{r}
 p_winsorised_mean <- function(x, p) {
@@ -169,12 +169,12 @@ p <- .25
 
 p_winsorised_mean(x, p)
 ```
-## `split()` and `unsplit()`
+## `split()` and `unsplit()` {-}
 + `split()` can perform grouped aggregations
 + `split()` takes a vector `x`, a factor `f`, and returns a list where each element corresponds to levels of 'f' containing evenly elements of 'x' at corresponding indices.
 + `split()` also tests our knowledge of '[' and '[['!
 
-## `split()` and `unsplit()`
+## `split()` and `unsplit()` {-}
 
 ```{r}
 x <- c(0, 0.2, 0.25, 0.4, 0.66, 1)
@@ -185,7 +185,7 @@ split(x, f)
 ```
 + i.e. x[1:2] pairs with f[1:2], x[3:4] pairs with f[3:4]
 
-## `split()` on data.frames
+## `split()` on data.frames {-}
 + Use `Map()` and `split()` to on data.frames to perform grouped aggregations.
 
 ```{r}
@@ -198,7 +198,7 @@ l <- Map(
 print(l[1:3])
 ```
 
-## vs. Dplyr
+## vs. Dplyr {-}
 
 ```{r}
 iris |>
@@ -207,11 +207,11 @@ iris |>
                     Median = median(Sepal.Length),
                     Max = max(Sepal.Length))
 ```
-## vs. Dplyr
+## vs. Dplyr {-}
 + `split()` may be useful for compatibility with packages that don't have a tidyverse compatible grouping attribute
 + ???
 
-## `order()` and `sort()`
+## `order()` and `sort()` {-}
 
 + `order()` returns a vector that lists *indices* corresponding to the values of 'x'
 ```{r}
@@ -228,7 +228,7 @@ sort(x)
 ```{r}
 all.equal(sort(x), x[order(x)])
 ```
-## `order()` and `sort()`
+## `order()` and `sort()` {-}
 + `order()` can return rankings
 ```{r}
 order(order(x))
@@ -236,7 +236,7 @@ order(order(x))
 rank(x, ties = "random")
 ```
 
-## `duplicated()`
+## `duplicated()` {-}
 + `duplicated()` returns a logical vector indicating whether a each element in `x`  is repeated in `x`
 ```{r}
 x <- sample(1:10, 10, replace = TRUE)
@@ -245,14 +245,14 @@ duplicated(x)
 match(x, unique(x))
 ```
 
-## `tabulate()`
+## `tabulate()` {-}
 + `tabulate()` returns a count of each element in vector `x`
 ```{r}
 x <- c(2, 4, 6, 2, 2, 2, 3, 6, 6, 3)
 tabulate(x)
 ```
 
-## `tabulate()`
+## `tabulate()` {-}
 + (Exercise 5-15)
 ```{r}
 y <- c("a", "b", "a", "c", "a", "d", "e", "e", "g", "g", "c", "c", "g")
@@ -260,12 +260,12 @@ result <- structure(tabulate(factor(y)), # y must be a factor or numeric
                     names = letters[match(unique(y), letters)])
 print(result)
 ```
-## Subsetting and Attributes
+## Subsetting and Attributes {-}
 
 + Subsetting functions tend to drop all attributes except for names
 + `'[['` drops *all* attributes
 
-## Applications
+## Applications {-}
 + Replace `NA` values with values from cubic interpolation
 + (Exercise 5-23)
 ```{r}
@@ -281,7 +281,7 @@ euraud[na_index] <- spline(euraud, n = length(euraud)) |>
                     _[na_index]
 ```
 
-## Applications
+## Applications {-}
 + Reorder a list by it's names attribute
 + (Exercise 5-14)
 
@@ -303,7 +303,7 @@ z[!(duplicated(names(z)) == TRUE)]
 str(union_list(x,y))
 
 ```
-## Applications
+## Applications {-}
 + Spearman rank coefficient
 ```{r}
 spearman_rank <- function(x, y) {
@@ -322,7 +322,7 @@ y <- rnorm(n = 5)
 
 spearman_rank(x,y)
 ```
-## Exercises?
+## Exercises? {-}
 
 + Which exercises were the most challenging?
 
