@@ -1,6 +1,6 @@
 # Lists and Attributes
 
-## Converting between Vector Types 
+## Converting between Vector Types {-}
 - Use `as.logical()`, `as.numeric()` and `as.character()` 
 - `TRUE` and `FALSE` become numeric `1` and `0` when cast into numeric form.
 - Any numeric other than `0`, `NA` and `NaN` becomes `TRUE` when cast into logical form. 
