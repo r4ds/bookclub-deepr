@@ -2,12 +2,597 @@
 
 **Learning objectives:**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- Intro to good code practices: TDD, assertions 
 
-## SLIDE 1 {-}
+## Managing data flow {-}
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+inputs -> Black Box -> outputs
+
+Try to follow Base-R behavior (even if sometimes R function are not consistent). 
+
+### Exerice 9.1
+
+```r{eval=faslse}
+sample.int("Spanish Inquisition")
+# Error: attempt to use zero-length variable name
+seq_along(list(1, 2, 3))
+# [1] 1 2 3
+rep("bob", -1)
+# 
+rep("bob", -1)
+# Error: attempt to use zero-length variable name
+rep("bob", TRUE)
+rep("bob", FALSE)
+strrep("bob", NA)
+# NA
+train <- rbind(iris3[1:25,,1], iris3[1:25,,2], iris3[1:25,,3])
+test <- rbind(iris3[26:50,,1], iris3[26:50,,2], iris3[26:50,,3])
+cl <- factor(c(rep("s",25), rep("c",25), rep("v",25)))
+class::knn(train, test, cl, k = numeric(0), prob=TRUE)
+# Error: attempt to use zero-length variable name
+```
+
+Even if "some" functions check data integrity for us what happens when we multiple functions: 
+
+```{r}
+round_rand <- function(n, d)
+{
+    x <- runif(n)  # runif will check if `n` makes sense
+    round(x, d)    # round will determine the appropriateness of `d`
+}
+```
+
+Solution:
+
+```r
+round_rand2 <- function(n, d)
+{
+    stopifnot(
+        is.numeric(n), length(n) == 1,
+        is.finite(n), n > 0, n == floor(n),
+        is.numeric(d), length(d) == 1,
+        is.finite(d), d > 0, d == floor(d)
+    )
+    x <- runif(n)
+    round(x, d)
+}
+round_rand2(3, -1)
+```
+
+In some cases, maybe you want to be more permissif: 
+
+```{r, eval=FALSE}
+# [..]
+if (length(n) > 1) {
+    warning("only the first element will be used")
+    n <- n[1]
+    }
+# [..]
+```
+
+### Exercice 9.6
+
+- A vectorised mathematical function: 
+    * empty vector? non-numeric input? -> No
+    * what if it is equipped with the names attribute? -> should not mind them
+
+- an aggregation function
+    * what about missing values? -> warnings and `na.rm = TRUE`
+    * empty vector -> No, Error
+
+- a function vectorised with regard to two arguments: 
+    * vectorized, unsure elemtwise 
+    * vector vs vector of the same length allowed? -> yes but warnings
+
+- a function vectorised with respect to all arguments: No see `na.rm=TRUE`
+
+- a function vectorised with respect to the first argument but not the second: plenty of cases
+
+### Putting outputs into context
+
+> we ought to generate outputs of a predictable kind
+
+IE: return same kind of object, do one task 
+
+
+### Exercise 9.8
+
+No, but unsure
+
+```{r, eval=FALSE}
+fred <- list(happy = 1:10, name = "squash")
+rep(fred, 5)
+seq(NULL)
+x <- 1:10
+sample(x[x > 10])
+```
+
+### Using `invisible()`
+
+return something but not printed!  
+
+
+## Organising and maintaining functions {-}
+
+### Function libraries
+
+```{r, evale=FALSE}
+#source("stuff.R") #cautious with path
+# cautious in which env source is called
+# by default source is called in global env
+# source in rmd: https://bookdown.org/yihui/rmarkdown-cookbook/source-script.html 
+```
+
+### Writing R packages 
+
+We can organize code in a **source** package: 
+
+See: https://github.com/gagolews/rpackagedemo for basic/mandatory structure 
+
+Also: https://r-pkgs.org/
+
+Ofc: https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Creating-R-packages
+
+#### Building and installing a package
+
+
+First:
+
+```{bash, eval=FALSE}
+git clone https://github.com/gagolews/rpackagedemo
+```
+
+Second:
+
+
+```{r}
+#install.packages("stringx")
+#install.packages("rpackagedemo/", repos=NULL, type="source")
+#library("rpackagedemo")
+```
+
+### Documenting 
+
+Even if the documetation are in `man/` (`.Rd` files), for once the author recommend  
+[roxygen2](roxygen2). Write specific comment with the function then use roxygen2 to generate the `.Rd` files.
+
+
+### Writing standalone programs
+
+- `commandArgs(trailingOnly=TRUE)`
+- `q(save="no", status=1)` #status is an integer > 0 = error
+
+I noticed the use of `--vanilla` and `-S` from `env`
+
+```{bash, eval=FALSE}
+Rscript --help
+#Combine --no-save, --no-restore, --no-site-file,
+#                      --no-init-file and --no-environ
+```
+
+>  ‘sink’ diverts R output to a connection (and must be used again to
+     finish such a diversion, see below!). 
+
+`sink` can be dangerous. In a non-interactive mode you can also use your shell `stdout/stderr`
+
+### Assuring quality code
+
+- Use git! 
+
+- Read other people code! 
+
+Example: https://github.com/r-spatial
+
+### Test-driven development
+
+ [Test-driven development](https://en.wikipedia.org/wiki/Test-driven_development)
+
+- Write test FIRST: it helps explicit assumptions 
+
+#### Exercise 9.15
+
+```{r, eval=FALSE}
+# v1
+rms <- function(x) sqrt(mean(x^2))
+
+stopifnot(all.equal(rms(1), 1))
+stopifnot(all.equal(rms(1:100), 58.16786054171151931769))
+stopifnot(all.equal(rms(rep(pi, 10)), pi))
+stopifnot(all.equal(rms(numeric(0)), 0))
+
+# v2
+rms <- function(x) { 
+    if (length(x) == 0) x <- 0
+    sqrt(mean(x^2, na.rm = TRUE))
+    }
+```
+
+
+
+#### Exercice 9.16
+
+```{r}
+my_sample <- function(x){ 
+    if (length(x) == 0 ) return(0)
+    if (length(x) == 1 && x == 0) return(0)
+    round(runif(x, min(x), max(x)))
+}
+
+stopifnot(all.equal(my_sample(1), 1))
+stopifnot(all.equal(my_sample(numeric(0)), 0))
+stopifnot(all.equal(my_sample(0), 0))
+
+```
+
+#### Do Stuff with R CMD check 
+
+#### Debugging / Profiling 
+
+This is nice but seems a bit outside of the scope of the book: 
+
+For Debugging -> use print
+
+For profiling -> just keep it in mind that i/o is probably a bottleneck 
+
+## Special functions: Syntactic sugar {-}
+
+Everything is a function!
+
+* Backticks:
+
+Useful for those column name: `percent (%) smthing`
+
+* $ Accessing element in name
+
+```{r}
+x <- list(spam="a", eggs="b", `eggs and spam`="c", best.spam.ever="d")
+x$eggs
+x$s # dangerous partial matching
+# better use [[]], see also exact = FALSe if needed 
+# can also be use names that are generated programmatically
+what <- "spam"
+x[[what]]
+```
+
+* Curly braces `{`
+
+  - works like function call  
+
+  - evaluate everything -> return last result
+  
+  - is also a function
+
+* Operator are functions!
+
+```{r}
+x <- list(1:5, 11:17, 21:23)
+all.equal(Map(`[`, x, 1),  Map(function(e) e[1], x)) 
+# I admit I prefer the second one
+```
+
+* defining your own binary operators (or more)
+
+```{r}
+`(^.^)` <- function(e1, e2) (e1+e2)/2
+`(^.^)`(5, 1:10)
+
+#unsure what is specila about %%
+`%:)%` <- function(e1, e2) (e1+e2)/2
+5 %:)% 1:10
+
+```
+
+### Replacement functions!
+
+```{r}
+x <- 1:5  # example input
+x[3] <- 0  # replace the third element with 0
+length(x) <- 7  # "replace" length
+names(x) <- LETTERS[seq_along(x)] 
+x
+```
+
+Example in the spatial world: `sf::st_crs()`
+
+```{r}
+`add<-` <- function(x, where=TRUE, value) # the where = true is nice!
+{
+    x[where] <- x[where] + value
+    x  # the modified object that will replace the original one
+}
+
+y <- 1:5           
+add(y) <- 10       # calls y <- `add<-`(y, value=10)
+print(y)
+```
+
+`y` must exist before the call
+
+```{r, eval=FALSE}
+add(bill) <- 10
+#Error in add(bill) <- 10 : object 'bill' not found
+```
+
+#### exercice 9.18
+
+```{r}
+`extend<-` <- function(x, value) {
+  c(x, value)  
+}
+x <- 1
+extend(x) <- 2  
+extend(x) <- 3:10 
+x
+```
+
+#### replacing attributes
+
+`names<-`, `class<-`, `dim<-`, `levels<-`, `colnames<-` : you can use use `attr<-` and `attributes<-`
+
+
+```{r}
+x <- "spam"
+attributes(x) <- list(shape="oval", smell="meaty")
+attributes(x) <- c(attributes(x), taste="umami")
+attr(x, "colour") <- "rose"
+print(x)
+```
+
+Setting an attribute to NULL remove it. 
+
+
+## Arguments and local variables {-}
+
+### Call by value vs call by reference
+
+> functions cannot change the state of their arguments
+
+```{r}
+test_change <- function(y)
+{
+    y[1] <- 7
+    y
+}
+
+x <- 1:5
+test_change(x)
+print(x) 
+```
+
+### Variable scope
+
+> Function arguments and any other variables we create inside a function’s body are relative to each call to that function.
+
+```{r, eval=FALSE}
+test_change <- function(x)
+{
+    x <- x+1
+    z <- -x
+    z
+}
+
+x <- 1:5
+test_change(x*10)
+## [1] -11 -21 -31 -41 -51
+print(x)  # x in the function's body was a different x
+## [1] 1 2 3 4 5
+#print(z)
+## Error in eval(expr, envir, enclos): object 'z' not found
+```
+
+Important note: 
+
+- do not refer to object not passed has an argument
+
+- it is the function call that is producing the local scope not `{}`
+
+### Closures
+
+* Most user defined function are "closures". 
+
+```{r}
+x <- seq(0, 1, length.out=11)
+f1 <- approxfun(x, x^2)
+f2 <- approxfun(x, x^3)
+print(f1)
+print(f2)
+```
+
+They look the same but they carry different data! 
+
+
+### Default arguments
+
+We already see plenty of them (the book use `log`).
+
+- `round` : `digits = 0`
+
+- `hist` : I  quickly counted 10 of them
+
+- `grep` : 6 of them
+
+- `download.file`: at least 4 and maybe more depending on `extra` (NULL here)
+
+Default arguments can be constants but also R expressions.  
+
+Usually at the end of list of parameters. 
+
+### Lazy versus eager evaluation
+
+Function argument are valuated only when needed.
+
+This one was tricky:
+
+```{r}
+lazy_test2 <- function(x)
+{
+    cat("it's... ")
+    y <- x+x  # using x twice
+    cat(" a man with two noses")
+    y
+}
+
+lazy_test2({cat("and now for something completely different!"); 7})
+```
+
+### Ellipsis `...`
+
+Represent a variable (non defined) number of parameters.
+
+Function with `...` are called *variadic function* (their parameters vary). 
+
+Uses cases: 
+
+- combine an arbitrary number of objects, ex: `c()` 
+
+- pass further arguments (as-is ?), ex: `lapply()`
+
+#### Exercise 9.28
+
+
+```{r}
+lapply(c(3, 9, 7), FUN = runif, min = -1, max = 1)
+```
+
+#### Metaprogramming
+
+1- Using expressions passed as a function w/o evaluating them: 
+
+```{r}
+test_deparse_substitute <- function(x)
+    deparse(substitute(x))  # does not evaluate whatever is behind `x`
+
+test_deparse_substitute(testing+1+2+3)
+```
+
+```{r}
+plot.default((1:100)^2)
+```
+
+
+#### Exercice 9.30
+
+```{r, eval=FALSE}
+# [...] From plot.default
+    xlabel <- if (!missing(x)) 
+        deparse1(substitute(x))
+    ylabel <- if (!missing(y)) 
+        deparse1(substitute(y))
+# [...]
+
+# data:  log(rlnorm(100))
+```
+
+Author is not fan of them (see later!)
+
+## Principles of sustainable design {-}
+
+### To write or abstain
+
+- Use DRY when complex operations are concerned
+
+- Not sure I am buying the tired / lazy part 
+
+For paste()/paste0() having a default parameter would have been good.
+
+For `deparse1`, you can still `print(deparse1)` 
+
+### To pamper or challenge
+
+Who is our audience?
+
+- Opinion: show cool stuff first 
+
+### To build or reusing 
+
+Using already build stuff allow us to build something fast, but will it be sustainable? 
+
+We need to consider dependencies, evolution of their API, change in functionality 
+
+> Also, we must clearly state how the original tools can be used to achieve the same goals, e.g., when working from the command line. In other words, let us not be selfish jerks.
+
+### To Revolt or evolve
+
+- interoperability concerns 
+
+## Exercices
+
+- stopifnot : everything need to be `TRUE`
+
+- `if` returns an expresions ("do something") related to a condition (TRUE/FALSE)
+
+- `attributes<-`(x, NULL):  Value of x: no but remove it's attributes
+
+- `[` and `[<-` when called in higher order function (Map, lapply)
+
+- `%someting%` , only element 1 and element 2
+
+- Use n parameters, pass other argument to a function
+
+- Nothing it is just that they make sense only in a data specific context
+
+- I guess the idea here is to say that the second argument will only be evaluated one f is called
+
+- They are the same? 
+
+- Some kind of function inside a a list?
+
+
+### Exercise 9.37
+
+```{r}
+f <- function(x)
+    for (e in x)
+        print(e)
+x <- list(1, 2,c(3, 4))
+f(x)
+f(list(1, NULL, 3))
+```
+
+### Exercise 9.38
+
+> The replacement forms return their right hand side. 
+
+### Exercise 9.39
+
+```{r}
+base_env <- ls(envir = baseenv())
+base_env[grep("<-", base_env)]
+#sadly we still have "<<-" that should be excluded
+```
+
+### Exercise 9.40
+
+> ‘Find’ and ‘Position’ give the first or last such element and its position in the vector, respectively. 
+
+```{r}
+small_vec <- c(1, 2, 2, 3, 5)
+even <- function(x) {x %% 2 == 0}
+Position(even , small_vec)
+Position(even, small_vec, right = TRUE)
+Position(even, c(1,3,5))
+#Position("notafunction", small_vec)
+
+my_pos <- function(FUN, vec, first = TRUE) {
+  if (!is.function(FUN)) return('informative error')
+  if (first) { 
+  idx <- seq_along(vec)
+  } else idx <- rev(seq_along(vec))
+  for (i in idx) {
+    res <- even(vec[[i]])
+    if (res) {
+      return(i)}
+  }
+  return(NA_integer_)
+}
+
+all.equal(my_pos(even, small_vec), Position(even , small_vec))
+all.equal(my_pos(even, small_vec, first = FALSE), 
+          Position(even, small_vec, right = TRUE))
+all.equal(my_pos(even, c(1,3,5)), 
+          Position(even, c(1,3,5)))
+my_pos("notafunction", small_vec)
+```
 
 ## Meeting Videos {-}
 
