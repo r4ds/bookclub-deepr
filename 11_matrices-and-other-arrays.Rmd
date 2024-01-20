@@ -1,13 +1,208 @@
 # Matrices and other arrays
 
-**Learning objectives:**
+**Learning objectives: all about matrix/array**
 
-- THESE ARE NICE TO HAVE BUT NOT ABSOLUTELY NECESSARY
+- What is a matrix and an array (for R)
 
-## SLIDE 1 {-}
+- How to create and/or convert to it
 
-- ADD SLIDES AS SECTIONS (`##`).
-- TRY TO KEEP THEM RELATIVELY SLIDE-LIKE; THESE ARE NOTES, NOT THE BOOK ITSELF.
+- Matrix and array manipulations: 
+
+    - Indexing 
+    
+    - Common operations 
+    
+- Matrix algebra
+
+## What is a matrix and an array {-}
+
+### S3 all the way!
+
+Give a generic vector a `dim` attributes -> matrix 
+
+```{r}
+(A <- structure(1:6, dim = c(2, 3)))
+```
+
+```{r}
+class(A)
+```
+
+Ok, but an array?: 
+
+```{r}
+(B <- structure(1:6, dim=6))
+class(B)
+```
+
+A matrix is a 2D array (which is a vector). The convention seems to be: give them a capital letter.
+
+### Not just numeric
+
+Logical:
+
+```{r}
+A >= 3
+```
+
+Character:
+
+```{r}
+matrix(strrep(LETTERS[1:6], 1:6), ncol=3)
+```
+
+Even list:
+
+```{r}
+matrix(list(1, 11:21, "A", list(1, 2, 3)), nrow=2)
+```
+
+> Certain elements are not displayed correctly, but they are still there.
+
+Internally elements are in column-major:
+
+```{r}
+(B <- matrix(1:6, ncol=3, byrow=TRUE))
+```
+
+```{r}
+as.numeric(B)
+```
+ cool tip: you can name dimnames!
+ 
+```{r}
+A <- structure(1:6, dim=c(2, 3), 
+               dimnames=list(letters[1:2], LETTERS[1:3]))
+names(dimnames(A)) <- c("ROWS", "COLUMNS")
+print(A)
+```
+ 
+
+## How to create and/or convert to it {-}
+
+They can be create by `array()` or by `matrix()`: 
+
+  - `array(vector, dim = length(data), dimnames = NULL)`
+  
+  `dimnames` is optional but will be used later. 
+  
+  - `matrix(vector, nrow = 1, ncol = 1, byrow = FALSE, dimnames = NULL)`
+  
+  - `cbind` and `rbind` can also be used (sometimes in conjunction with `do.call()`)
+  
+  *Be careful* `do.call` will use the recycle rule.  
+  
+  - `simplify2array()`: has the name suggest: list of vector of same length  
+-> `sapply()` is `lapply()` + (if `simplify = TRUE`, the default) `simplif2array`
+
+```{r}
+x <- list(a = runif(10), b = rnorm(15))
+sapply(x, function(e) c(Min = min(e), Max = max(e)))
+```
+
+- `table()` creates contingency table: matrix/array 
+
+## Matrix and array manipulations {-}
+
+### what you know on indexing on data.frame works here
+
+Get the book example:
+
+```{r}
+(A <- matrix(1:12, byrow=TRUE, nrow=3))
+(B <- `dimnames<-`(A, list(  
+    c("a", "b", "c"),      
+    c("x", "y", "z", "w") 
+)))
+```
+
+```{r}
+A[3, ] # rows
+```
+```{r}
+A[, 2] # column
+```
+
+```{r}
+B["c", "y"]  # specify dimnames
+```
+
+**By** default `drop` is set to TRUE with `[`
+
+```{r}
+A[1, 2, drop = FALSE]
+```
+
+### But behind the scene it is just a vector:
+
+This works! :mind_blow:
+
+```{r}
+A[6]
+```
+
+### Selecting by submatrices
+
+It works, not going deep into it, but selecting on two columns numeric matrices is probably super useful. 
+
+It uses an index on row/column and return individual cells matching those "coordinates".
+
+On the same idea:
+
+```{r}
+which(A>7, arr.ind=TRUE) #
+```
+
+Return a "coordinate" matrix of cell that are matching a logical vector.
+
+### Higher-dimensional array (mostly know as contingency table)
+
+```{r}
+str(dimnames(Titanic))
+```
+
+hence (because it is "dimnmamed") it works:
+
+```{r}
+Titanic["1st", "Male", "Adult", "No", drop = FALSE]
+```
+
+But also with empty "space":
+
+```{r}
+Titanic["1st", , "Adult", ] 
+```
+
+
+## "Common operations":
+
+- You can use `t()`
+
+- Do aggregate with `apply()` (see data.frame)
+
+The second argument is specifying the dimensions mostly: 1 for row and 2 for columns but it can be "expanded".
+
+```{r}
+apply(Titanic, c(1, 3), mean)
+```
+
+
+### Binary operators
+
+- array x array: do an element wise operation 
+
+- array x scalar: scalar is recycled
+
+- array x vector: the only tricky one it works by recycling column wisely
+
+```{r}
+(B <- matrix(1:6, byrow=TRUE, nrow=2))
+```
+
+```{r}
+B * c(1, 100)
+```
+
 
 ## Meeting Videos {-}
 
